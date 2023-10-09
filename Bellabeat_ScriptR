@@ -1,4 +1,4 @@
-## installing packages 
+# installing packages 
 
 install.packages("tidyverse")
 
@@ -15,8 +15,7 @@ install.packages("dplyr")
 library("dplyr") # Using dplyr for grouping and summarizing
 
 
-library("ggplot2") #for data visualization for a scatter plot 
-
+library("ggplot2") # for data visualization for a scatter plot 
 
 install.packages("janitor")
 library("janitor")
