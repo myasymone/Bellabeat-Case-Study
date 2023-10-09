@@ -1,1 +1,219 @@
+## installing packages 
+
+install.packages("tidyverse")
+
+library("tidyverse")
+
+install.packages("setwd")
+
+library("lubridate")
+
+install.packages("skimr")
+library("skimr")  #for summarizing data
+
+install.packages("dplyr")
+library("dplyr") # Using dplyr for grouping and summarizing
+
+
+library("ggplot2") #for data visualization for a scatter plot 
+
+
+install.packages("janitor")
+library("janitor")
+
+install.packages("plotrix")
+library("plotrix")
+
+library(readr)
+daily_activity <- read_csv("Fitabase Data/dailyActivity_merged.csv")
+
+library(readr)
+daily_sleep <- read_csv("Fitabase Data/sleepDay_merged.csv")
+
+library(readr)
+weight_log <- read_csv("Fitabase Data/weightLogInfo_merged.csv")
+
+head(daily_activity) # Display the first few rows of the data
+head(daily_sleep)
+head(weight_log) 
+
+
+colnames(daily_activity)  #identify all column names
+colnames(daily_sleep)  #identify all column names
+colnames(weight_log)  #identify all column names
+
+summary(daily_activity)   # Summary statistics
+summary(daily_sleep)   # Summary statistics
+summary(weight_log)   # Summary statistics
+
+
+str(daily_activity)   # Structure of the data
+str(daily_sleep)   # Structure of the data
+str(weight_log)   # Structure of the data
+
+skim(daily_activity) # Generate a summary report for a dataset 
+skim(daily_sleep)
+skim(weight_log)
+
+daily_activity <- clean_names(daily_activity)
+daily_sleep <- clean_names(daily_sleep)
+weight_log <- clean_names(weight_log)
+
+#Double-check the columns are uniformed 
+colnames(daily_activity) 
+colnames(daily_sleep)
+colnames(weight_log)
+
+#Rename the 'date' columns in each set to activity date for uniformity
+
+daily_activity <- daily_activity %>%  rename(activity_date = activity_date)
+daily_sleep <- daily_sleep %>% rename(activity_date = sleep_day)
+weight_log <- weight_log %>% rename(activity_date = date)
+
+#Convert ID field to a character data type
+daily_activity <- daily_activity %>%  
+  mutate_at(vars("id"), as.character)
+
+daily_sleep <- daily_sleep %>%
+  mutate_at(vars("id"), as.character)
+
+weight_log <- weight_log %>%
+  mutate_at(vars("id"), as.character)
+
+#check the structure 
+str(daily_activity)
+str(daily_sleep)
+str(weight_log)
+
+#Convert activity_date to reflect only date and not time in daily_sleep and weight_log
+daily_sleep$activity_date <- sub(" .*", "", daily_sleep$activity_date)
+
+weight_log$activity_date <- sub(" .*", "", weight_log$activity_date)
+
+library(lubridate)                              
+daily_activity$activity_date <- mdy(daily_activity$activity_date)
+daily_sleep$activity_date <- mdy(daily_sleep$activity_date)
+weight_log$activity_date <- mdy(weight_log$activity_date)
+
+#Check our columns to ensure the changes were made correctly
+
+head(daily_activity)
+head(daily_sleep)
+head(weight_log) 
+
+#Count distinct ID's
+
+n_distinct(daily_activity$id)
+n_distinct(daily_sleep$id)
+n_distinct(weight_log$id)
+
+#Identify how many duplicates we have 
+
+sum(duplicated(daily_activity))
+sum(duplicated(daily_sleep))
+sum(duplicated(weight_log))
+
+#Review the duplicate entries to confirm if they are actual duplicates with the same entry in every row
+
+library(janitor)
+
+get_dupes(daily_sleep)
+
+
+#Remove all confirmed duplicates from daily_sleep
+
+daily_sleep <- distinct(daily_sleep, .keep_all = TRUE)
+
+#Double-check the duplicates have been removed 
+
+sum(duplicated(daily_sleep))
+
+
+#Combine data frames by id and activity_date
+
+combined_data <- daily_sleep %>%
+  right_join(daily_activity, by = c("id", "activity_date")) %>%
+  left_join(weight_log, by = c("id", "activity_date"))
+
+#View the new data frame
+View(combined_data)
+
+#Create a new column for the weekday based on activity_date and view the new column
+combined_data$weekday <- wday(combined_data$activity_date, label = TRUE)
+
+head(combined_data$weekday)
+
+view(combined_data)
+
+#Gather statistic summaries to gain insight
+
+combined_data %>%
+  select(total_steps, total_distance, very_active_minutes, fairly_active_minutes, lightly_active_minutes, sedentary_minutes)%>%
+  summary()
+
+combined_data %>%
+  select( total_minutes_asleep,total_time_in_bed )%>%
+  summary()
+
+combined_data %>%
+  select( calories, fat, weight_pounds, bmi )%>%
+  summary()
+
+#Gather the sum of the very active minutes
+sum(combined_data$very_active_minutes)
+sum(combined_data$fairly_active_minutes)
+sum(combined_data$lightly_active_minutes)
+sum(combined_data$sedentary_minutes)
+
+#Visual for total steps by the day of the week. 
+
+ggplot(combined_data, aes(x = weekday, y = total_steps)) +
+  geom_bar(stat = "identity", fill = "#E69F00") +
+  labs(title = "Steps Logged by Day in the Week", x = "Day of the Week", y = "Total Steps")
+
+#Visual for the active minutes vs sedentary
+
+Active <- sum(combined_data$very_active_distance)
+Fairly <- sum(combined_data$fairly_active_minutes)
+Lightly <- sum(combined_data$lightly_active_minutes)
+Sedentary <- sum(combined_data$sedentary_minutes)
+
+values <- c(19895, 181244, 12751, 931738)
+piepercent <- round(100 * values / sum(values), 1)
+categories <- c("Very Active", "Lightly Active", "Fairly Active", "Sedentary")
+colors <- c("orange", "purple", "yellow", "pink")
+par(mar = c(0, 0, 2, 0))
+pie(piepercent, labels = paste(piepercent, "%"), col = colors, main = "Percentage of Active Minutes", cex = 0.55)
+legend("topright", legend = categories, fill = colors, title = "Key", cex = 0.6)
+
+#Visual for time in bed vs time asleep
+
+ggplot(data=combined_data, aes(x=total_minutes_asleep, y=total_time_in_bed)) + geom_point(color = "black") + geom_smooth() +
+  labs(x="Total Time Asleep", y="Total Time in Bed", title = "Time Spent Asleep vs Time Spent in Bed")
+
+#Visual for Calories Burned vs Minutes Spent active 
+
+ggplot(data=combined_data, aes(x=very_active_minutes, y=calories, color = calories)) +
+    geom_point() + 
+    geom_smooth() +
+    labs(x = "Active Minutes", y ="Calories Burned" , title = "Calories vs Active Minutes")
+
+#Visual for Calories Burned vs Sedentary Minutes 
+ggplot(data=combined_data, aes(x=sedentary_minutes, y=calories, color = calories)) +
+  geom_point() + 
+  geom_smooth() +
+  labs(x = "Sedentary Minutes", y ="Calories Burned" , title = "Calories vs Sedentary Minutes")
+
+#Visual for Calories Burned vs Total Sleep
+ggplot(data=combined_data, aes(x=total_minutes_asleep, y=calories, color = calories)) +
+  geom_point() + 
+  geom_smooth() +
+  labs(x = "Time Asleep", y ="Calories Burned" , title = "Time Asleep vs Calories Burned")
+
+#Visual for Calories Burned vs Total Steps
+ggplot(data=combined_data, aes(x=total_steps, y=calories, color = calories)) +
+  geom_point() + 
+  geom_smooth() +
+  labs(x = "Total Steps", y ="Calories Burned" , title = "Total Steps vs Calories Burned")
+
 
