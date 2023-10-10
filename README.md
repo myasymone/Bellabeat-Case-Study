@@ -356,7 +356,6 @@ Now we need to summarize the data and discover any insights about the data.
 **Insights:**
 
 - According to the data pulled, The average total steps are 7,638 steps. CDC recommended daily steps should be around 10,000 steps a day. However, NIH and CDC have recently provided research showing that more than 8,000 steps can also provide improvement in health when meeting daily steps.  (CDC and NIH)
-
 - The average very active minutes are 21.16 minutes while the sedentary minutes are an average of 991.20 minutes or 16.52 hours. Users' average for light activities is 192.8 minutes or 3.2 hours. This means they are spending most of their time doing light activities compared to the other categories. 
      - It is advised that spending more than 7-10 hours sedentary is bad for your health. 
      - It is recommended to do an average of 30 minutes a day of moderate activity and 75 minutes a week of vigorous activity. (CDC 2)
@@ -397,22 +396,76 @@ Now we need to summarize the data and discover any insights about the data.
 - The average user weighs 158.8 pounds and has a BMI of 25.19, which is slightly higher than the average.
 
 
-## Share
+## SHARE
 
 Now that I have completed the analysis, it's time to create the data visualizations.
 
 
-            #Gather the sum of the very active minutes
-            sum(combined_data$very_active_minutes)
-            sum(combined_data$fairly_active_minutes)
-            sum(combined_data$lightly_active_minutes)
-            sum(combined_data$sedentary_minutes)
-            
-            #Visual for total steps by the day of the week. 
-            
-            ggplot(combined_data, aes(x = weekday, y = total_steps)) +
-              geom_bar(stat = "identity", fill = "#E69F00") +
-              labs(title = "Steps Logged by Day in the Week", x = "Day of the Week", y = "Total Steps")
+![Steps by the Day of the Week](https://github.com/myasymone/Bellabeat-Case-Study/blob/013db66d6b6c5f4a8f9dd985bbbfef8b8fbd2443/Photos/Number%20of%20Steps%20by%20Week.png "Steps by the Day of the Week")
 
+- In this graph, we can see **Tuesday, Wednesday, and Thursday** have the most steps, and **Sunday** has the least number of steps. I can assume this behavior is due to users becoming busier with work and/or personal lives during this time and may be too exhausted and least likely to exercise or meet their steps by **Friday-Monday**. 
+- We show that the steps feature is commonly used among users which marketing can reference and apply to their mobile fitness devices as well.
+
+![Percentage of Active Minutes](https://github.com/myasymone/Bellabeat-Case-Study/blob/e07c73b7a50e2d5512e68189fb5ff958d299ca70/Photos/Active%20minutes.png "Percentage of Active Minutes")
+
+- In this visual, the pie chart shows that users are spending the majority of their time inactive which covers 81.3% of the chart.
+- This information can be used by marketing to include a feature that  encourages users to reduce their sedentary minutes and become more active throughout the day with alerts or reminders to encourage movement.  
+
+![Time Asleep vs Time in Bed](https://github.com/myasymone/Bellabeat-Case-Study/blob/013db66d6b6c5f4a8f9dd985bbbfef8b8fbd2443/Photos/time%20asleep%20vs%20time%20in%20bed.png "Time Asleep vs Time in Bed")
+
+- This graph shows there is a positive correlation between the time spent in bed and the time asleep. 
+- We can also see there are outliers that are at the middle and top of the plot that should be taken into consideration. The outliers are individuals who are spending more time in bed but not asleep. 
+
+![Calories vs Active Minutes](https://github.com/myasymone/Bellabeat-Case-Study/blob/013db66d6b6c5f4a8f9dd985bbbfef8b8fbd2443/Photos/Calories%20vs%20active%20minutes.png "Calories vs Active Minutes")
+
+- Here we can see there is a positive correlation between the more minutes spent active, and the more calories burned. 
+- We can use this information with the marketing team to advise users who are looking to burn calories.
+
+![Calories vs Sedentary Minutes](https://github.com/myasymone/Bellabeat-Case-Study/blob/c84a496ad356c7b0d298595423081256135ba581/Photos/Calories%20vs%20Sedentary%20Minutes.png "Calories vs Sedentary Minutes")
+
+- There seems to be a positive correlation between sedentary minutes and calories burned at 750 minutes. I can assume this would mean users are getting the right amount of rest in order to have the right amount of energy to exercise.
+- After 1,000 minutes the graph shows an inverse reaction which proves that once users are experiencing more time inactive, they are no longer taking the time to be active.
+  
+![Time Asleep vs Calories Burned](https://github.com/myasymone/Bellabeat-Case-Study/blob/c84a496ad356c7b0d298595423081256135ba581/Photos/Time%20asleep%20vs%20calories%20burned.png "Time Asleep vs Calories Burned")
+
+- While the graph does contain a few outliers, which is expected, We can see the majority of users are seeing users are burning calories when they are spending 300-550 minutes asleep. This would be about 5 to 9.2 hours of sleep which shows a correlation to those who burn calories when they receive recommended sleep.
+  
+![Total Steps vs Calories Burned](https://github.com/myasymone/Bellabeat-Case-Study/blob/c84a496ad356c7b0d298595423081256135ba581/Photos/Total%20steps%20vs%20calories%20burned.png "Total Steps vs Calories Burned")
+
+- We show a positive correlation between total steps and the calories burned. This indicates the more steps taken, the more calories burned which is important information for Bellabeat to know.
+
+## ACT
+
+The primary objective of this case study was to leverage the Fitbit data to provide strategic recommendations to Bellabeat's marketing team for enhancing their company's growth. Given the similarities in product offerings between Bellabeat and Fitbit, the insights derived from Fitbit data analysis can offer valuable guidance.
+
+Upon the completion of data cleaning, processing, and analysis, it becomes evident that the average user tends to spend a significant amount of time in a sedentary state. This sedentary behavior is often attributed to work or academic commitments that require prolonged periods of sitting. Consequently, there is an opportunity for Bellabeat to empower users with reminders that emphasize the importance of physical activity in improving their overall health.
+
+One promising recommendation is to develop a feature that encourages users to break their sedentary routines by prompting them to engage in activities such as walking, running, stretching, or other aerobic exercises. These reminders can be tailored to the user's preferences, with options to set reminders by the hour or activate them after a specific duration of inactivity. Such a feature not only enhances user experience but also aligns with Bellabeat's commitment to promoting a healthy lifestyle among its users, demonstrating care for users' well-being.
+
+### **How Can These Trends Benefit Bellabeat's Customers?**
+
+The identified trends offer valuable insights for Bellabeat's marketing team to improve their product offerings and user experience:
+
+**Activity Tracking Patterns:** Users tend to be more active on Tuesday, Wednesday, and Thursday, while Monday, Friday, and Sunday show lower activity levels. Bellabeat can capitalize on this by implementing an algorithm that sends motivational reminders to users on less active days, helping them stay on track with their fitness goals.
+
+**Tracking Preferences:** The analysis reveals that users primarily track their steps and calories burned, with less emphasis on tracking sleep and even fewer users tracking their weight. Bellabeat can enhance user engagement by introducing features that encourage weight tracking. This might involve streamlining the weight tracking process, making it more user-friendly, or introducing innovative solutions such as a smart weight scale that seamlessly integrates with their platform.
+
+**Sedentary Behavior:** The data highlights that users spend a significant portion of their time in a sedentary state (81%), with only a small fraction dedicated to physical activity (19%). Bellabeat can use this information to develop a feature that promotes increased physical activity. This feature can customize activity recommendations based on the user's current activity level and could even consider adjusting activity goals during a woman's menstrual cycle to provide motivation for lighter activities. These efforts would further demonstrate Bellabeat's commitment to the well-being of its users.
+
+By aligning its marketing strategies with these insights, Bellabeat can enhance its product offerings and user engagement, ultimately fostering healthier and more active lifestyles among its users
+
+## CITES
+
+**Daily Activity:**
+
+1. Centers for Disease Control and Prevention. "Physical Activity - Basics for Adults." CDC, www.cdc.gov/physicalactivity/basics/adults/index.htm.
+2. Centers for Disease Control and Prevention. "CDC Media Release: Daily Step Counts Among U.S. Adults." CDC, www.cdc.gov/media/releases/2020/p0324-daily-step-count.html.
+3. National Institutes of Health. "Steps to Better Health - All of Us." NIH Researchers compared All of Us Fitbit data and electronic health records, allofus.nih.gov/news-events/research-highlights/steps-to-better-health-all-of-us.
+4. World Health Organization. "Physical Activity." WHO, www.who.int/news-room/fact-sheets/detail/physical-activity.
+5. HealthyWA. "Sedentary Behaviour." HealthyWA, www.healthywa.wa.gov.au/Articles/S_T/Sedentary-behaviour.
+
+**Sleep:**
+
+1. National Heart, Lung, and Blood Institute - NIH. "How Much Sleep Is Enough?" NHLBI, www.nhlbi.nih.gov/health/sleep/how-much-sleep.
 
 
